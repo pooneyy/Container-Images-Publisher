@@ -1,0 +1,18 @@
+repo: https://github.com/pooneyy/1Panel-Appstore-Images-Publisher
+
+ref: main
+
+image_name: picx
+
+# renovate: datasource=github-releases depName=XPoet/picx
+image_tag: 3.0.2
+
+build_context: .
+
+dockerfile: .github/configs/picx/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/riscv64, linux/s390x, linux/386
+
+build_args: 
+
+build_target: 
