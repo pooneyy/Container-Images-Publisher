@@ -1,0 +1,19 @@
+repo: https://github.com/pooneyy/1Panel-Appstore-Images-Publisher
+
+ref: main
+
+image_name: maccms10
+
+# renovate: datasource=github-releases depName=magicblack/maccms10
+image_tag: 2025.1000.4050
+
+build_context: .
+
+dockerfile: .github/configs/maccms10/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7
+
+# renovate: datasource=github-releases depName=magicblack/maccms10
+build_args: REF=v2025.1000.4050
+
+build_target: 
