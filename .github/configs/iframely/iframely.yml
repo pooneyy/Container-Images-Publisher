@@ -1,0 +1,19 @@
+repo: https://github.com/itteco/iframely
+
+# renovate: datasource=github-releases depName=itteco/iframely
+ref: v2.4.3
+
+image_name: iframely
+
+# renovate: datasource=github-releases depName=itteco/iframely
+image_tag: 2.4.3
+
+build_context: .
+
+dockerfile: Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7
+
+build_args: 
+
+build_target: 
