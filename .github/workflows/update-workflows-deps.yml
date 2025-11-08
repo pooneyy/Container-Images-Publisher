@@ -1,0 +1,41 @@
+name: Auto Update Workflow Dependencies
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - .github/workflows/*.yml
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+
+jobs:
+  merge-prs:
+    name: 自动合并此 PR
+    if: github.actor == 'renovate[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: 检出分支
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.base_ref }}
+      
+      - name: 合并 PR
+        run: |
+          max_attempts=5
+          for attempt in $(seq 1 $max_attempts); do
+            if gh pr merge $PR_NUMBER --squash --delete-branch --body ""; then
+              echo "✅ Merge PR #$PR_NUMBER Success"
+              exit 0
+            else
+              echo "⚠️ Merge PR #$PR_NUMBER Failed ($attempt / $max_attempts)"
+              sleep 5
+            fi
+          done
