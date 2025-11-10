@@ -5,7 +5,7 @@ ref: main
 image_name: picx
 
 # renovate: datasource=github-releases depName=XPoet/picx
-image_tag: 3.0.2
+image_tag: 3.0.2,latest
 
 build_context: .
 

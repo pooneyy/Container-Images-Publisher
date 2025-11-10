@@ -6,7 +6,7 @@ ref: v5.0.0-beta.27
 image_name: stremio-web
 
 # renovate: datasource=github-releases depName=Stremio/stremio-web
-image_tag: 5.0.0-beta.27
+image_tag: 5.0.0-beta.27,latest
 
 build_context: .
 

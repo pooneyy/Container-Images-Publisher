@@ -5,7 +5,7 @@ ref: main
 image_name: maccms10
 
 # renovate: datasource=github-releases depName=magicblack/maccms10
-image_tag: 2025.1000.4051
+image_tag: 2025.1000.4051,latest
 
 build_context: .
 
