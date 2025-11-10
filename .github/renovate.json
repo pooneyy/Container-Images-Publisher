@@ -23,6 +23,10 @@
         ".github/configs/php/8.4/Dockerfile"
       ],
       "allowedVersions": "/^8.4.*/"
+    },
+    {
+      "matchPackageNames": ["ghcr.io/pooneyy/php/**"],
+      "groupName": "php"
     }
   ],
   "customManagers": [
