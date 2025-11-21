@@ -213,7 +213,7 @@ jobs:
       - name: 获取镜像大小
         run: |
           docker manifest inspect ${{ env.IMAGE_FULL_NAME }}:${{ env.FIRST_TAG }} -v > manifest.json
-          curl -o ./get_image_size.sh -s https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/script/get_image_size.sh
+          curl -o ./get_image_size.sh -s https://raw.githubusercontent.com/pooneyy/1Panel-Appstore/refs/heads/script/get_image_size.sh
           chmod +x get_image_size.sh
 
       - name: 获取软件包 ID
