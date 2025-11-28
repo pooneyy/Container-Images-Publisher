@@ -1,12 +1,12 @@
 repo: https://github.com/Stremio/stremio-web
 
 # renovate: datasource=github-releases depName=Stremio/stremio-web
-ref: v5.0.0-beta.28
+ref: v5.0.0-beta.29
 
 image_name: stremio-web
 
 # renovate: datasource=github-releases depName=Stremio/stremio-web
-image_tag: 5.0.0-beta.28,latest
+image_tag: 5.0.0-beta.29,latest
 
 build_context: .
 
