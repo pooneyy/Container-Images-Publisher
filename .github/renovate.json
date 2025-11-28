@@ -49,6 +49,16 @@
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
+    },
+    {
+      "description": "处理 README 中的 docker pull 命令",
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/).+\\.md$/"],
+      "matchStrings": [
+        // 调试正则表达式: https://regexr.com/8ifk0
+        "(?:(?<datasource>docker) pull )?(?<depName>[\\S]+):(?<currentValue>[\\S]+)"
+      ],
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}docker{{/if}}"
     }
   ],
   "prCreation": "immediate"
