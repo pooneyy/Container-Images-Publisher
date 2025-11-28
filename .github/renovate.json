@@ -28,6 +28,11 @@
       "matchPackageNames": ["ghcr.io/pooneyy/php"],
       "matchCurrentVersion": "/^8.1[^\\s]*/",
       "allowedVersions": "/^8.1[^\\s]*/"
+    },
+    {
+      "matchPackageNames": ["ghcr.io/pooneyy/php"],
+      "matchCurrentVersion": "/^8.4[^\\s]*/",
+      "allowedVersions": "/^8.4[^\\s]*/"
     }
   ],
   "customManagers": [
