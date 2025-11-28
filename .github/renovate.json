@@ -25,8 +25,8 @@
       "allowedVersions": "/^8.4.*/"
     },
     {
-      "matchPackageNames": ["ghcr.io/pooneyy/php/**"],
-      "groupName": "php"
+      "matchPackageNames": ["ghcr.io/pooneyy/php/8.1**"],
+      "allowedVersions": "/^8.1[^\\s]*/"
     }
   ],
   "customManagers": [
