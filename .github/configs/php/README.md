@@ -8,7 +8,7 @@
 
 ### php8.1
 ```shell
-docker pull ghcr.io/pooneyy/php:8.1.33-fpm-bookworm-php-unofficial
+docker pull ghcr.io/pooneyy/php:8.1.34-fpm-bookworm-php-unofficial
 ```
 ```shell
 docker pull ghcr.io/pooneyy/php:8.1-fpm-bookworm-php-unofficial
