@@ -1,0 +1,20 @@
+repo: https://github.com/pooneyy/Container-Images-Publisher
+
+ref: main
+
+image_name: php
+
+# renovate: datasource=docker depName=php
+image_tag_prefix: 8.3.28-fpm-bookworm
+
+image_tag: -php-unofficial,8.3-fpm-bookworm-php-unofficial
+
+build_context: .
+
+dockerfile: .github/configs/php/8.3/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7
+
+build_args: 
+
+build_target: 
