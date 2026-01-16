@@ -1,4 +1,4 @@
-From php:8-apache-bookworm
+FROM php:8-apache-bookworm
 ARG REF master
 RUN apt-get update && apt-get install -y \
       git \
