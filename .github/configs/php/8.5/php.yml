@@ -5,13 +5,13 @@ ref: main
 image_name: php
 
 # renovate: datasource=docker depName=php
-image_tag_prefix: 8.4.17-fpm-bookworm
+image_tag_prefix: 8.5.0-fpm-bookworm
 
-image_tag: -php-unofficial,8.4-fpm-bookworm-php-unofficial
+image_tag: -php-unofficial,8.5-fpm-bookworm-php-unofficial,8-fpm-bookworm-php-unofficial,latest
 
 build_context: .
 
-dockerfile: .github/configs/php/8.4/Dockerfile
+dockerfile: .github/configs/php/8.5/Dockerfile
 
 architectures: linux/amd64, linux/arm64, linux/arm/v7
 
