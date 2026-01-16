@@ -1,0 +1,18 @@
+repo: https://github.com/pooneyy/Container-Images-Publisher
+
+ref: main
+
+image_name: wavelog
+
+# renovate: datasource=github-releases depName=wavelog/wavelog
+image_tag: 2.2.1,latest
+
+build_context: .
+
+dockerfile: .github/configs/wavelog/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7
+
+build_args: 
+
+build_target: 
