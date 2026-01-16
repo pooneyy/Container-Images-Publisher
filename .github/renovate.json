@@ -11,28 +11,29 @@
       "versioning": "semver"
     },
     {
-      "matchFileNames": [
-        ".github/configs/php/8.1/php.yml",
-        ".github/configs/php/8.1/Dockerfile"
-      ],
-      "allowedVersions": "/^8.1.*/"
+      "matchPackageNames": ["php"],
+      "matchCurrentVersion": "/^(8.1|8.1[^\\s]*)/",
+      "allowedVersions": "/^(8.1|8.1[^\\s]*)/"
     },
     {
-      "matchFileNames": [
-        ".github/configs/php/8.4/php.yml",
-        ".github/configs/php/8.4/Dockerfile"
-      ],
-      "allowedVersions": "/^8.4.*/"
+      "matchPackageNames": ["php"],
+      "matchCurrentVersion": "/^(8.2|8.2[^\\s]*)/",
+      "allowedVersions": "/^(8.2|8.2[^\\s]*)/"
     },
     {
-      "matchPackageNames": ["ghcr.io/pooneyy/php"],
-      "matchCurrentVersion": "/^8.1[^\\s]*/",
-      "allowedVersions": "/^8.1[^\\s]*/"
+      "matchPackageNames": ["php"],
+      "matchCurrentVersion": "/^(8.3|8.3[^\\s]*)/",
+      "allowedVersions": "/^(8.3|8.3[^\\s]*)/"
     },
     {
-      "matchPackageNames": ["ghcr.io/pooneyy/php"],
-      "matchCurrentVersion": "/^8.4[^\\s]*/",
-      "allowedVersions": "/^8.4[^\\s]*/"
+      "matchPackageNames": ["php"],
+      "matchCurrentVersion": "/^(8.4|8.4[^\\s]*)/",
+      "allowedVersions": "/^(8.4|8.4[^\\s]*)/"
+    },
+    {
+      "matchPackageNames": ["php"],
+      "matchCurrentVersion": "/^(8.5|8.5[^\\s]*)/",
+      "allowedVersions": "/^(8.5|8.5[^\\s]*)/"
     }
   ],
   "customManagers": [
