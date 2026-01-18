@@ -14,12 +14,36 @@ docker pull ghcr.io/pooneyy/php:8.1.34-fpm-bookworm-php-unofficial
 docker pull ghcr.io/pooneyy/php:8.1-fpm-bookworm-php-unofficial
 ```
 
+### php8.2
+```shell
+docker pull ghcr.io/pooneyy/php:8.2.30-fpm-bookworm-php-unofficial
+```
+```shell
+docker pull ghcr.io/pooneyy/php:8.2-fpm-bookworm-php-unofficial
+```
+
+### php8.3
+```shell
+docker pull ghcr.io/pooneyy/php:8.3.30-fpm-bookworm-php-unofficial
+```
+```shell
+docker pull ghcr.io/pooneyy/php:8.3-fpm-bookworm-php-unofficial
+```
+
 ### php8.4
 ```shell
 docker pull ghcr.io/pooneyy/php:8.4.17-fpm-bookworm-php-unofficial
 ```
 ```shell
 docker pull ghcr.io/pooneyy/php:8.4-fpm-bookworm-php-unofficial
+```
+
+### php8.5
+```shell
+docker pull ghcr.io/pooneyy/php:8.5.2-fpm-bookworm-php-unofficial
+```
+```shell
+docker pull ghcr.io/pooneyy/php:8.5-fpm-bookworm-php-unofficial
 ```
 ```shell
 docker pull ghcr.io/pooneyy/php:8-fpm-bookworm-php-unofficial
