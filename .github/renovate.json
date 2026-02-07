@@ -40,7 +40,7 @@
     {
       "description": "处理带有注释的依赖项",
       "customType": "regex",
-      "managerFilePatterns": ["/(^|/).+\\.ya?ml$/"],
+      "managerFilePatterns": ["/(^|/).+\\.ya?ml$/", "/(^|/).+\/Dockerfile$/"],
       "matchStrings": [
         // # renovate: datasource=github-releases depName=k3s-io/k3s
         // k3s_release_version: &version v1.29.0+k3s1
