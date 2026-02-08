@@ -1,0 +1,18 @@
+repo: https://github.com/pooneyy/Container-Images-Publisher
+
+ref: main
+
+image_name: squid
+
+# renovate: datasource=github-releases depName=squid-cache/squid
+image_tag: 7.2,7,latest
+
+build_context: .github/configs/squid
+
+dockerfile: .github/configs/squid/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/s390x
+
+build_args: 
+
+build_target: 
