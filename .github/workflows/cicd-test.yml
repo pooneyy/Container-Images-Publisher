@@ -23,7 +23,7 @@ permissions:
 jobs:
   get-build-parameters:
     name: 获取构建参数
-    if: github.actor == 'renovate[bot]'
+    if: github.actor == 'renovate[bot]' || github.actor == github.repository_owner
     runs-on: ubuntu-latest
     outputs:
       repo: ${{ steps.read-config-file.outputs.repo }}
@@ -199,7 +199,7 @@ jobs:
         with:
           build-args: |
             ${{ needs.get-build-parameters.outputs.build_args }}
-          context: ${{ needs.get-build-parameters.outputs.build_context}}
+          context: ${{ needs.get-build-parameters.outputs.build_context }}
           target: ${{ needs.get-build-parameters.outputs.build_target }}
           push: true
           file: ${{ needs.get-build-parameters.outputs.dockerfile }}
