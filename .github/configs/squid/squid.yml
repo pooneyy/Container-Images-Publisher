@@ -4,7 +4,7 @@ ref: main
 
 image_name: squid
 
-# renovate: datasource=github-releases depName=squid-cache/squid
+# renovate: datasource=github-tags depName=squid-cache/squid
 image_tag: 7.2,7,latest
 
 build_context: .github/configs/squid

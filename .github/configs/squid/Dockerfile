@@ -6,7 +6,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
         libldap2-dev libpam0g-dev libsasl2-dev libtdb-dev \
         pkg-config checkinstall rename curl
 
-# renovate: datasource=github-releases depName=squid-cache/squid
+# renovate: datasource=github-tags depName=squid-cache/squid
 ARG SQUID_VERSION=7.2
 
 RUN TAG=SQUID_$(echo ${SQUID_VERSION#v} | tr '.' '_') ; \
