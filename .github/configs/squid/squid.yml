@@ -5,7 +5,7 @@ ref: main
 image_name: squid
 
 # renovate: datasource=github-tags depName=squid-cache/squid
-image_tag: 7.2,7,latest
+image_tag: 7.4,7,latest
 
 build_context: .github/configs/squid
 
@@ -14,6 +14,6 @@ dockerfile: .github/configs/squid/Dockerfile
 architectures: linux/amd64, linux/arm64, linux/ppc64le, linux/s390x
 
 # renovate: datasource=github-tags depName=squid-cache/squid
-build_args: SQUID_VERSION=7.2
+build_args: SQUID_VERSION=7.4
 
 build_target: 
