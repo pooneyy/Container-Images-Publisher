@@ -1,13 +1,16 @@
 FROM ubuntu AS build
 
-RUN apt-get update -qq && apt-get install -y -qq \
-        autoconf automake libtool-bin build-essential g++ \
-        libdb-dev libecap3-dev libgnutls28-dev libkrb5-dev \
-        libldap2-dev libpam0g-dev libsasl2-dev libtdb-dev \
-        pkg-config checkinstall rename curl
+RUN sed -i 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources
 
-# renovate: datasource=github-tags depName=squid-cache/squid
-ARG SQUID_VERSION=7.2
+RUN apt-get update -qq ;\
+    apt build-dep -y squid ;\
+    apt-get install -y -qq \
+        autoconf automake libtool-bin build-essential g++ \
+        libdb-dev libgnutls28-dev libkrb5-dev libldap2-dev \
+        libpam0g-dev libsasl2-dev libtdb-dev ed pkg-config \
+        checkinstall rename curl
+
+ARG SQUID_VERSION
 
 RUN TAG=SQUID_$(echo ${SQUID_VERSION#v} | tr '.' '_') ; \
     URL=https://github.com/squid-cache/squid/archive/refs/tags/$TAG.tar.gz ; \
@@ -15,28 +18,16 @@ RUN TAG=SQUID_$(echo ${SQUID_VERSION#v} | tr '.' '_') ; \
     tar -xzf /tmp/squid.tar.gz -C /tmp ; \
     mv /tmp/squid-$TAG /tmp/squid_code
 
-RUN cd /tmp/squid_code ; \
-    ./bootstrap.sh ; \
+WORKDIR /tmp/squid_code
+
+RUN ./bootstrap.sh ; \
     ./configure \
-        --prefix=/usr \
-        --includedir=/usr/include \
-        --mandir=/usr/share/man \
-        --infodir=/usr/share/info \
-        --sysconfdir=/etc \
-        --localstatedir=/var \
         --disable-option-checking \
         --disable-silent-rules \
-        --disable-shared \
-        --enable-static \
-        --runstatedir=/run \
         --disable-maintainer-mode \
         --disable-dependency-tracking \
         --with-build-environment=default \
         --enable-build-info="Build by https://github.com/pooneyy/Container-Images-Publisher" \
-        --datadir=/usr/share/squid \
-        --sysconfdir=/etc/squid \
-        --libexecdir=/usr/lib/squid \
-        --mandir=/usr/share/man \
         --enable-inline \
         --disable-arch-native \
         --enable-async-io=8 \
@@ -59,21 +50,16 @@ RUN cd /tmp/squid_code ; \
         --enable-icmp \
         --enable-zph-qos \
         --disable-translation \
-        --with-swapdir=/var/spool/squid \
-        --with-logdir=/var/log/squid \
-        --with-pidfile=/run/squid.pid \
         --with-filedescriptors=65536 \
         --with-large-files \
         --with-default-user=proxy \
         --enable-linux-netfilter \
         --with-gnutls \
-        PKG_CONFIG="pkg-config" \
-        CFLAGS="-O2 -flto=auto -fPIC -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -Wno-error -Wno-unused-parameter -Wno-error=deprecated-declarations" \
-        LDFLAGS="-static" \
-        CPPFLAGS="-D_FORTIFY_SOURCE=3" \
-        CXXFLAGS="-O2 -flto=auto -fPIC -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -Wno-error -Wno-unused-parameter -Wno-error=deprecated-declarations" ; \
-    make -j$(nproc) ; \
-    checkinstall  \
+        CPPFLAGS="-D_FORTIFY_SOURCE=3"
+
+RUN make -j$(nproc)
+
+RUN checkinstall  \
         --pkgname=squid \
         --pkgversion=1 \
         --pkgrelease=1 \

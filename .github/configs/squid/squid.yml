@@ -11,8 +11,9 @@ build_context: .github/configs/squid
 
 dockerfile: .github/configs/squid/Dockerfile
 
-architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/s390x
+architectures: linux/amd64, linux/arm64, linux/ppc64le, linux/s390x
 
-build_args: 
+# renovate: datasource=github-tags depName=squid-cache/squid
+build_args: SQUID_VERSION=7.2
 
 build_target: 
