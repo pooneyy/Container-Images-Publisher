@@ -74,6 +74,10 @@ FROM ubuntu
 COPY --from=build /tmp/squid_code/squid.deb /tmp/squid.deb
 RUN dpkg -i /tmp/squid.deb
 
+ENV SQUID_CACHE_DIR=/var/spool/squid \
+    SQUID_LOG_DIR=/var/log/squid \
+    SQUID_USER=proxy
+
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
