@@ -280,7 +280,7 @@ jobs:
           push-to-registry: true
 
       - name: 清空工作区
-        uses: mickem/clean-after-action@v1
+        uses: mickem/clean-after-action@v2
         with:
           keepGit: true
         if: ${{ always() }}
