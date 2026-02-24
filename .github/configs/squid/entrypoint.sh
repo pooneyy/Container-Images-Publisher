@@ -4,10 +4,72 @@
 
 set -e
 
-create_log_dir() {
-  mkdir -p ${SQUID_LOG_DIR}
-  chmod -R 755 ${SQUID_LOG_DIR}
-  chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR}
+copy_config_file() {
+  if [[ ! -f '/etc/squid/squid.conf' ]]; then
+    echo "Copy config file..."
+    cp --update=none /usr/etc/squid.conf /etc/squid/
+    sed -i 's/^http_access deny !Safe_ports/# http_access deny !Safe_ports/' /etc/squid/squid.conf
+    sed -i 's/^http_access deny CONNECT !SSL_ports/# http_access deny CONNECT !SSL_ports/' /etc/squid/squid.conf
+    awk 'BEGIN { inserted = 0 }
+      !inserted && /# INSERT YOUR OWN RULE\(S\) HERE TO ALLOW ACCESS FROM YOUR CLIENTS/ {
+          print
+          flag = 1
+          next
+      }
+      !inserted && flag == 1 && /^#\s*$/ {
+          print
+          print ""
+          print "include /etc/squid/conf.d/*.conf"
+          inserted = 1
+          flag = 0
+          next
+      }
+      {
+          if (flag == 1) flag = 0
+          print
+      }' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
+    sed -i 's/^http_port 3128//' /etc/squid/squid.conf
+    awk '/# Squid normally listens to port 3128/ {
+        print
+        print "# If you want to use an HTTPS proxy and disable the HTTP proxy, please uncomment"
+        print "# the following lines, deploy the certificate and private key in the corresponding"
+        print "# locations, and then comment out http_port 3128."
+        print "# 如果你要使用 https 代理并关闭 http 代理, 请取消注释以下行, 在对应的位置部署证书与私钥,"
+        print "# 然后注释掉 http_port 3128"
+        next
+    }1' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
+    awk -v only_https="${SQUID_ONLY_HTTPS}" '
+      /# 然后注释掉 http_port 3128/ {
+      print
+      if (only_https == "true") {
+        print "https_port 3128 cert=/etc/squid/squid.crt key=/etc/squid/squid.key"
+        print "# http_port 3128"
+      } else {
+        print "# https_port 3128 cert=/etc/squid/squid.crt key=/etc/squid/squid.key"
+        print "http_port 3128"
+      }
+      getline next_line
+      if (next_line ~ /^[[:space:]]*$/ ){} else { print next_line }
+      next
+    }1' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
+    sed -i 's/^#\(cache_dir ufs \/var\/spool\/squid 100 16 256\)/\1/' /etc/squid/squid.conf
+  fi
+}
+
+create_auth_config() {
+  if [[ -n ${SQUID_AUTH_USER} && -n ${SQUID_AUTH_PASS} ]]; then
+    echo "Create auth config..."
+    htpasswd -c -b /etc/squid/passwd ${SQUID_AUTH_USER} ${SQUID_AUTH_PASS}
+    mkdir -p /etc/squid/conf.d
+    cat > /etc/squid/conf.d/auth.conf << EOF
+auth_param basic program $(find /usr -name 'basic_ncsa_auth') /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Squid
+auth_param basic credentialsttl 2 hours
+acl authenticated proxy_auth REQUIRED
+http_access allow authenticated
+EOF
+  fi
 }
 
 create_cache_dir() {
@@ -15,8 +77,33 @@ create_cache_dir() {
   chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_CACHE_DIR}
 }
 
-create_log_dir
+create_certificate() {
+  if [[ ! -f '/etc/squid/squid.crt' || ! -f '/etc/squid/squid.key' ]]; then
+    echo "Create certificate..."
+    openssl ecparam -name secp384r1 -genkey -noout -out /etc/squid/squid.key
+    openssl req -new -x509 -key /etc/squid/squid.key -out /etc/squid/squid.crt -days 36500 \
+      -subj "/CN=Squid" \
+      -addext "keyUsage=digitalSignature, keyAgreement, keyEncipherment" \
+      -addext "extendedKeyUsage=serverAuth"
+  fi
+}
+
+create_log_dir() {
+  mkdir -p ${SQUID_LOG_DIR}
+  chmod -R 755 ${SQUID_LOG_DIR}
+  chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR}
+}
+
+copy_config_file
+create_auth_config
 create_cache_dir
+create_certificate
+create_log_dir
+
+if [[ -f '/run/squid.pid' ]]; then
+  echo "Delete the pid file..."
+  rm -f /run/squid.pid
+fi
 
 # allow arguments to be passed to squid
 if [[ ${1:0:1} = '-' ]]; then
