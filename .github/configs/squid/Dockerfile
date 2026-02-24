@@ -8,7 +8,8 @@ RUN apt-get update -qq ;\
         autoconf automake libtool-bin build-essential g++ \
         libdb-dev libgnutls28-dev libkrb5-dev libldap2-dev \
         libpam0g-dev libsasl2-dev libtdb-dev ed pkg-config \
-        checkinstall rename curl
+        ruby rename curl ; \
+        gem install --no-document fpm
 
 ARG SQUID_VERSION
 
@@ -22,12 +23,17 @@ WORKDIR /tmp/squid_code
 
 RUN ./bootstrap.sh ; \
     ./configure \
+        --prefix=/usr \
+        --localstatedir=/var \
+        --with-logdir=/var/log/squid \
+        --with-pidfile=/run/squid.pid \
+        --with-swapdir=/var/spool/squid \
         --disable-option-checking \
         --disable-silent-rules \
         --disable-maintainer-mode \
         --disable-dependency-tracking \
         --with-build-environment=default \
-        --enable-build-info="Build by https://github.com/pooneyy/Container-Images-Publisher" \
+        --enable-build-info="Built by https://github.com/pooneyy/Container-Images-Publisher" \
         --enable-inline \
         --disable-arch-native \
         --enable-async-io=8 \
@@ -55,24 +61,29 @@ RUN ./bootstrap.sh ; \
         --with-default-user=proxy \
         --enable-linux-netfilter \
         --with-gnutls \
+        --with-openssl \
         CPPFLAGS="-D_FORTIFY_SOURCE=3"
 
 RUN make -j$(nproc)
 
-RUN checkinstall  \
-        --pkgname=squid \
-        --pkgversion=1 \
-        --pkgrelease=1 \
-        --default \
-        --fstrans=no \
-        --install=no \
-        make install ; \
+RUN mkdir -p /tmp/squid-pkg ; \
+    make install-strip DESTDIR=/tmp/squid-pkg ; \
+    fpm -s dir -t deb -n squid -v 1 --iteration 1 \
+        -d libkrb5-3 -d libgssapi-krb5-2 -d libnetfilter-conntrack3 -d libltdl7 \
+        -C /tmp/squid-pkg . ; \
     rename 's/.*/squid.deb/' *.deb
 
 FROM ubuntu
 
 COPY --from=build /tmp/squid_code/squid.deb /tmp/squid.deb
-RUN dpkg -i /tmp/squid.deb
+RUN apt-get update -qq ;\
+    apt-get install -y apache2-utils openssl /tmp/squid.deb ;\
+    apt-get clean ;\
+    rm -rf /var/lib/apt/lists/*
+
+ENV SQUID_CACHE_DIR=/var/spool/squid \
+    SQUID_LOG_DIR=/var/log/squid \
+    SQUID_USER=proxy
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
