@@ -26,6 +26,8 @@ jobs:
     if: github.actor == 'renovate[bot]' || github.actor == github.repository_owner
     runs-on: ubuntu-latest
     outputs:
+      runs_on: ${{ steps.read-config-file.outputs.runs_on }}
+      build_parallelism: ${{ steps.read-config-file.outputs.build_parallelism }}
       repo: ${{ steps.read-config-file.outputs.repo }}
       ref: ${{ steps.read-config-file.outputs.ref }}
       image_name: ${{ steps.read-config-file.outputs.image_name }}
@@ -61,6 +63,8 @@ jobs:
         id: read-config-file
         run: |
           file=${{ steps.updated-files.outputs.file }}
+          echo "runs_on=$(yq e '.runs_on // "ubuntu-latest"' $file)" >> $GITHUB_OUTPUT
+          echo "build_parallelism=$(yq e '.build_parallelism // ""' $file)" >> $GITHUB_OUTPUT
           echo "repo=$(yq e '.repo' $file)" >> $GITHUB_OUTPUT
           echo "ref=$(yq e '.ref' $file)" >> $GITHUB_OUTPUT
           echo "image_name=$(yq e '.image_name' $file)" >> $GITHUB_OUTPUT
@@ -78,7 +82,8 @@ jobs:
 
   publish-docker:
     name: 构建并发布 Docker 镜像
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.get-build-parameters.outputs.runs_on }}
+    timeout-minutes: 7200
     needs: get-build-parameters
     steps:
       - name: 确认构建参数
@@ -191,8 +196,23 @@ jobs:
 
       - name: 安装 QEMU
         uses: docker/setup-qemu-action@v3
+      - name: 准备 Buildx 配置
+        id: prepare-buildx
+        run: |
+          parallelism="${{ needs.get-build-parameters.outputs.build_parallelism }}"
+          if [ -n "$parallelism" ]; then
+            cat > ${{ github.workspace }}/buildkitd.toml <<EOF
+          [worker.oci]
+            max-parallelism = ${parallelism}
+          EOF
+            echo "config_path=${{ github.workspace }}/buildkitd.toml" >> $GITHUB_OUTPUT
+          else
+            echo "config_path=" >> $GITHUB_OUTPUT
+          fi
       - name: 安装 Buildx Kit
         uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-config: ${{ steps.prepare-buildx.outputs.config_path }}
       - name: 构建并推送 Docker 镜像
         id: push
         uses: docker/build-push-action@v6
@@ -258,6 +278,12 @@ jobs:
           subject-name: ${{ env.IMAGE_FULL_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+      - name: 清空工作区
+        uses: mickem/clean-after-action@v1
+        with:
+          keepGit: true
+        if: ${{ always() }}
 
   merge-prs:
     name: 自动合并此 PR
