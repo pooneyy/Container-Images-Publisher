@@ -5,6 +5,7 @@
 set -e
 
 copy_config_file() {
+  mkdir -p /etc/squid/conf.d
   if [[ ! -f '/etc/squid/squid.conf' ]]; then
     echo "Copy config file..."
     cp --update=none /usr/etc/squid.conf /etc/squid/
@@ -29,39 +30,17 @@ copy_config_file() {
           print
       }' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
     sed -i 's/^http_port 3128//' /etc/squid/squid.conf
-    awk '/# Squid normally listens to port 3128/ {
-        print
-        print "# If you want to use an HTTPS proxy and disable the HTTP proxy, please uncomment"
-        print "# the following lines, deploy the certificate and private key in the corresponding"
-        print "# locations, and then comment out http_port 3128."
-        print "# 如果你要使用 https 代理并关闭 http 代理, 请取消注释以下行, 在对应的位置部署证书与私钥,"
-        print "# 然后注释掉 http_port 3128"
-        next
-    }1' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
-    awk -v only_https="${SQUID_ONLY_HTTPS}" '
-      /# 然后注释掉 http_port 3128/ {
-      print
-      if (only_https == "true") {
-        print "https_port 3128 cert=/etc/squid/squid.crt key=/etc/squid/squid.key"
-        print "# http_port 3128"
-      } else {
-        print "# https_port 3128 cert=/etc/squid/squid.crt key=/etc/squid/squid.key"
-        print "http_port 3128"
-      }
-      getline next_line
-      if (next_line ~ /^[[:space:]]*$/ ){} else { print next_line }
-      next
-    }1' /etc/squid/squid.conf > /tmp/squid.conf && mv /tmp/squid.conf /etc/squid/squid.conf
     sed -i 's/^#\(cache_dir ufs \/var\/spool\/squid 100 16 256\)/\1/' /etc/squid/squid.conf
   fi
 }
 
-create_auth_config() {
+create_config_auth() {
   if [[ -n ${SQUID_AUTH_USER} && -n ${SQUID_AUTH_PASS} ]]; then
     echo "Create auth config..."
-    htpasswd -c -b /etc/squid/passwd ${SQUID_AUTH_USER} ${SQUID_AUTH_PASS}
-    mkdir -p /etc/squid/conf.d
-    cat > /etc/squid/conf.d/auth.conf << EOF
+    if [[ ! -f '/etc/squid/passwd' ]]; then > /etc/squid/passwd; fi
+    htpasswd -b /etc/squid/passwd ${SQUID_AUTH_USER} ${SQUID_AUTH_PASS}
+    if [[ ! -f '/etc/squid/conf.d/auth.conf' ]]; then
+      cat > /etc/squid/conf.d/auth.conf << EOF
 auth_param basic program $(find /usr -name 'basic_ncsa_auth') /etc/squid/passwd
 auth_param basic children 5
 auth_param basic realm Squid
@@ -69,6 +48,39 @@ auth_param basic credentialsttl 2 hours
 acl authenticated proxy_auth REQUIRED
 http_access allow authenticated
 EOF
+    fi
+  else
+    echo "No auth config..."
+    if [[ ! -f '/etc/squid/conf.d/auth.conf' ]]; then
+      cat > /etc/squid/conf.d/auth.conf << EOF
+# Uncomment allow connections from all clients
+# 取消注释后将会允许来自所有客户端的连接
+# http_access allow all
+EOF
+    fi
+  fi
+}
+
+create_config_ports() {
+  if [[ ! -f '/etc/squid/conf.d/ports.conf' ]]; then
+    if [[ ${SQUID_ONLY_HTTPS} == true ]]; then
+      echo "Configure https on port 3128..."
+      cat > /etc/squid/conf.d/ports.conf << EOF
+https_port 3128 cert=/etc/squid-ssl/squid.crt key=/etc/squid-ssl/squid.key
+# http_port 3128
+EOF
+    else
+      echo "Configure http on port 3128..."
+      cat > /etc/squid/conf.d/ports.conf << EOF
+# If you want to use HTTPS proxy and disable the HTTP proxy, please uncomment
+# the following lines, deploy the certificate and private key in the corresponding
+# locations, and then comment out http_port 3128.
+# 如果你要使用 https 代理并关闭 http 代理, 请取消注释以下行, 在对应的位置部署证书与私钥,
+# 然后注释掉 http_port 3128
+# https_port 3128 cert=/etc/squid-ssl/squid.crt key=/etc/squid-ssl/squid.key
+http_port 3128
+EOF
+    fi
   fi
 }
 
@@ -78,10 +90,11 @@ create_cache_dir() {
 }
 
 create_certificate() {
-  if [[ ! -f '/etc/squid/squid.crt' || ! -f '/etc/squid/squid.key' ]]; then
+  mkdir -p /etc/squid-ssl
+  if [[ ! -f '/etc/squid-ssl/squid.crt' || ! -f '/etc/squid-ssl/squid.key' ]]; then
     echo "Create certificate..."
-    openssl ecparam -name secp384r1 -genkey -noout -out /etc/squid/squid.key
-    openssl req -new -x509 -key /etc/squid/squid.key -out /etc/squid/squid.crt -days 36500 \
+    openssl ecparam -name secp384r1 -genkey -noout -out /etc/squid-ssl/squid.key
+    openssl req -new -x509 -key /etc/squid-ssl/squid.key -out /etc/squid-ssl/squid.crt -days 36500 \
       -subj "/CN=Squid" \
       -addext "keyUsage=digitalSignature, keyAgreement, keyEncipherment" \
       -addext "extendedKeyUsage=serverAuth"
@@ -95,9 +108,10 @@ create_log_dir() {
 }
 
 copy_config_file
-create_auth_config
 create_cache_dir
 create_certificate
+create_config_auth
+create_config_ports
 create_log_dir
 
 if [[ -f '/run/squid.pid' ]]; then
