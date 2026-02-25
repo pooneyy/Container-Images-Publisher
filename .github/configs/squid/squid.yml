@@ -1,3 +1,7 @@
+runs_on: self-hosted
+
+build_parallelism: 2
+
 repo: https://github.com/pooneyy/Container-Images-Publisher
 
 ref: main
@@ -11,7 +15,7 @@ build_context: .github/configs/squid
 
 dockerfile: .github/configs/squid/Dockerfile
 
-architectures: linux/amd64, linux/arm64, linux/ppc64le, linux/s390x
+architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/riscv64, linux/s390x
 
 # renovate: datasource=github-tags depName=squid-cache/squid
 build_args: SQUID_VERSION=7.4
