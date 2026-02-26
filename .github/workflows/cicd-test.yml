@@ -273,7 +273,7 @@ jobs:
           echo "</code></pre>" >> $GITHUB_STEP_SUMMARY
 
       - name: 生成工件证明
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ env.IMAGE_FULL_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
