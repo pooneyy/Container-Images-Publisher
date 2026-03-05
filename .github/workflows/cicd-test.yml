@@ -195,7 +195,7 @@ jobs:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
 
       - name: 安装 QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       - name: 准备 Buildx 配置
         id: prepare-buildx
         run: |
