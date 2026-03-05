@@ -173,7 +173,7 @@ jobs:
 
       - name: 提取镜像注册表的元数据（标记、标签）
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.IMAGE_FULL_NAME }}
           tags: ${{ steps.set-tags.outputs.tags }}
