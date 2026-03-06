@@ -215,7 +215,7 @@ jobs:
           buildkitd-config: ${{ steps.prepare-buildx.outputs.config_path }}
       - name: 构建并推送 Docker 镜像
         id: push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             ${{ needs.get-build-parameters.outputs.build_args }}
