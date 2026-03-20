@@ -67,14 +67,18 @@
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
-      "description": "处理 README 中的 docker pull 命令",
+      "description": "处理 README 中的 docker 镜像",
       "customType": "regex",
       "managerFilePatterns": ["/(^|/).+\\.md$/"],
       "matchStrings": [
         // 调试正则表达式: https://regexr.com/8ifk0
-        "(?:(?<datasource>docker) pull )?(?<depName>[\\S]+):(?<currentValue>[\\S]+)"
+        // 匹配 docker pull 命令
+        "docker pull (?<depName>[\\S]+):(?<currentValue>[\\S]+)",
+        // 调试正则表达式: https://regexr.com/8lbm6
+        // 匹配 docker-compose 的 image 字段
+        "image:\\s*(?<depName>[\\S]+):(?<currentValue>[\\S]+)"
       ],
-      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}docker{{/if}}"
+      "datasourceTemplate": "docker"
     }
   ],
   "prCreation": "immediate"
