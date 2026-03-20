@@ -6,6 +6,10 @@
   "rebaseWhen": "never",
   "packageRules": [
     {
+      "matchPackageNames": ["wavelog/wavelog", "ghcr.io/wavelog/wavelog"],
+      "groupName": "wavelog"
+    },
+    {
       "matchPackageNames": ["Stremio/stremio-web"],
       "ignoreUnstable": false,
       "versioning": "semver"
