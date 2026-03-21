@@ -30,5 +30,5 @@ services:
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/squid:7.4
+docker pull ghcr.io/pooneyy/squid:7.5
 ```
