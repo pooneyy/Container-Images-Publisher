@@ -8,7 +8,7 @@ ref: main
 
 image_name: squid
 
-image_tag: 7.4,7,latest
+image_tag: 7.5,7,latest
 
 build_context: .github/configs/squid
 
@@ -16,6 +16,6 @@ dockerfile: .github/configs/squid/Dockerfile
 
 architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/riscv64, linux/s390x
 
-build_args: SQUID_VERSION=7.4
+build_args: SQUID_VERSION=7.5
 
 build_target: 
