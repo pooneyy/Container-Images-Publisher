@@ -1,4 +1,4 @@
-FROM ghcr.io/wavelog/wavelog:2.3.1
+FROM ghcr.io/wavelog/wavelog:2.4.1
 RUN sed -i '/^exec /i sed -i  '\''s/<input type="text" id="db_hostname" placeholder="localhost" class="form-control" name="db_hostname" \\\/>/<input type="text" id="db_hostname" value="'\''${DB_HOST}'\''" class="form-control" name="db_hostname" \\\/>/'\'' ./install/index.php' /usr/local/bin/apache2-foreground; \
 	sed -i '/^exec /i sed -i  '\''s/<input type="text" id="db_name" placeholder="wavelog" class="form-control" name="db_name" \\\/>/<input type="text" id="db_name" value="'\''${DATABASE}'\''" class="form-control" name="db_name" \\\/>/'\'' ./install/index.php' /usr/local/bin/apache2-foreground; \
 	sed -i '/^exec /i sed -i  '\''s/<input type="text" id="db_username" placeholder="waveloguser" class="form-control" name="db_username" \\\/>/<input type="text" id="db_username" value="'\''${DATABASE_USERNAME}'\''" class="form-control" name="db_username" \\\/>/'\'' ./install/index.php' /usr/local/bin/apache2-foreground; \
