@@ -1,0 +1,19 @@
+repo: https://github.com/pooneyy/Container-Images-Publisher
+
+ref: main
+
+image_name: acg-faka
+
+# renovate: datasource=github-releases depName=lizhipay/acg-faka
+image_tag: 3.4.4,latest
+
+build_context: .
+
+dockerfile: .github/configs/acg-faka/Dockerfile
+
+architectures: linux/amd64, linux/arm64, linux/arm/v7
+
+# renovate: datasource=github-releases depName=lizhipay/acg-faka
+build_args: REF=3.4.4
+
+build_target: 
