@@ -7,7 +7,7 @@
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/maccms10:2025.1000.4052
+docker pull ghcr.io/pooneyy/maccms10:2026.1000.4053
 ```
 ```shell
 docker pull ghcr.io/pooneyy/maccms10:latest
