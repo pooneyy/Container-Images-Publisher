@@ -39,7 +39,7 @@ jobs:
       build_target: ${{ steps.read-config-file.outputs.build_target }}
     steps:
       - name: 检出分支
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
@@ -295,7 +295,7 @@ jobs:
       pull-requests: write
     steps:
       - name: 检出分支
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.base_ref }}
       
