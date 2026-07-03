@@ -24,7 +24,7 @@ docker pull ghcr.io/pooneyy/php:8.2-fpm-bookworm-php-unofficial
 
 ### php8.3
 ```shell
-docker pull ghcr.io/pooneyy/php:8.3.31-fpm-bookworm-php-unofficial
+docker pull ghcr.io/pooneyy/php:8.3.32-fpm-bookworm-php-unofficial
 ```
 ```shell
 docker pull ghcr.io/pooneyy/php:8.3-fpm-bookworm-php-unofficial
