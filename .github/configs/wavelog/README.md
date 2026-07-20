@@ -14,7 +14,7 @@ Wavelog 是一个开源的业余无线电通联日志管理系统，业余无线
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/wavelog:3.0.1
+docker pull ghcr.io/pooneyy/wavelog:3.0.2
 ```
 ```shell
 docker pull ghcr.io/pooneyy/wavelog:latest
