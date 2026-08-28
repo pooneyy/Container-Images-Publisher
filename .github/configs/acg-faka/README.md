@@ -7,7 +7,7 @@ acg-faka（异次元发卡系统）是一个基于 PHP 开发的开源个人发�
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/acg-faka:3.6.2
+docker pull ghcr.io/pooneyy/acg-faka:3.6.4
 ```
 ```shell
 docker pull ghcr.io/pooneyy/acg-faka:latest
