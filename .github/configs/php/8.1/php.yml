@@ -1,6 +1,6 @@
 repo: https://github.com/pooneyy/Container-Images-Publisher
 
-ref: main
+ref: renovate/php-8.1
 
 image_name: php
 
