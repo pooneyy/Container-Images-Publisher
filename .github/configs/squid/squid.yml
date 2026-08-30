@@ -16,6 +16,9 @@ dockerfile: .github/configs/squid/Dockerfile
 
 architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/riscv64, linux/s390x
 
-build_args: SQUID_VERSION=7.7
+build_args: |-
+  BUILDKIT_UBUNTU_VERSION=resolute-20260811.1
+  BUILDKIT_IMAGE=ghcr.io/pooneyy/squid-buildkit:2026.08.30
+  SQUID_VERSION=7.7
 
 build_target: 
