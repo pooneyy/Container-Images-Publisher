@@ -6,9 +6,9 @@ repo: https://github.com/pooneyy/Container-Images-Publisher
 
 ref: main
 
-image_name: squid
+image_name: squid-test
 
-image_tag: 7.7.0,7.7,7,latest
+image_tag: self-build
 
 build_context: .github/configs/squid
 
