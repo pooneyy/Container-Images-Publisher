@@ -1,4 +1,6 @@
-FROM ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS stage-build
+ARG BUILDKIT_IMAGE=stage-buildkit
+ARG BUILDKIT_UBUNTU_VERSION=resolute-20260811.1
+FROM ubuntu:${BUILDKIT_UBUNTU_VERSION} AS stage-buildkit
 
 RUN sed -i 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources
 
@@ -10,6 +12,8 @@ RUN apt-get update -qq ;\
         libpam0g-dev libsasl2-dev libtdb-dev ed pkg-config \
         ruby rename curl ; \
         gem install --no-document fpm
+
+FROM ${BUILDKIT_IMAGE} AS stage-build
 
 ARG SQUID_VERSION
 
