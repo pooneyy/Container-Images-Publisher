@@ -1,6 +1,6 @@
 runs_on: self-hosted
 
-build_parallelism: 2
+build_parallelism: 6
 
 repo: https://github.com/pooneyy/Container-Images-Publisher
 
@@ -8,7 +8,7 @@ ref: main
 
 image_name: squid-test
 
-image_tag: self-build
+image_tag: pre-build
 
 build_context: .github/configs/squid
 
@@ -18,7 +18,7 @@ architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/risc
 
 build_args: |-
   BUILDKIT_UBUNTU_VERSION=resolute-20260811.1
-  BUILDKIT_IMAGE=stage-buildkit
+  BUILDKIT_IMAGE=ghcr.io/pooneyy/squid-buildkit:2026.08.30
   SQUID_VERSION=7.7
 
 build_target: 
