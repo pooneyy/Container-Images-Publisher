@@ -1,0 +1,15 @@
+ARG UBUNTU_VERSION=resolute-20260811.1
+FROM ubuntu:${UBUNTU_VERSION} AS buildkit
+
+RUN sed -i 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources
+
+RUN apt-get update -qq ;\
+    apt build-dep -y squid ;\
+    apt-get install -y -qq \
+        autoconf automake libtool-bin build-essential g++ \
+        libdb-dev libgnutls28-dev libkrb5-dev libldap2-dev \
+        libpam0g-dev libsasl2-dev libtdb-dev ed pkg-config \
+        ruby rename curl ; \
+        gem install --no-document fpm
+
+CMD ["/bin/bash"]
