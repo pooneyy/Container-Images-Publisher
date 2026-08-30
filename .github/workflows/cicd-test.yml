@@ -77,7 +77,11 @@ jobs:
           echo "build_context=$(yq e '.build_context' $file)" >> $GITHUB_OUTPUT
           echo "dockerfile=$(yq e '.dockerfile' $file)" >> $GITHUB_OUTPUT
           echo "architectures=$(yq e '.architectures' $file)" >> $GITHUB_OUTPUT
-          echo "build_args=$(yq e '.build_args' $file)" >> $GITHUB_OUTPUT
+          {
+            echo "build_args<<EOF"
+            yq e '.build_args // ""' $file
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
           echo "build_target=$(yq e '.build_target' $file)" >> $GITHUB_OUTPUT
 
   publish-docker:
