@@ -1,4 +1,4 @@
-FROM ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS build
+FROM ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS stage-build
 
 RUN sed -i 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources
 
@@ -75,7 +75,7 @@ RUN mkdir -p /tmp/squid-pkg ; \
 
 FROM ubuntu
 
-COPY --from=build /tmp/squid_code/squid.deb /tmp/squid.deb
+COPY --from=stage-build /tmp/squid_code/squid.deb /tmp/squid.deb
 RUN apt-get update -qq ;\
     apt-get install -y apache2-utils openssl /tmp/squid.deb ;\
     apt-get clean ;\
