@@ -73,7 +73,12 @@ RUN make -j$(nproc)
 RUN mkdir -p /tmp/squid-pkg ; \
     make install-strip DESTDIR=/tmp/squid-pkg ; \
     fpm -s dir -t deb -n squid -v 1 --iteration 1 \
-        -d libkrb5-3 -d libgssapi-krb5-2 -d libnetfilter-conntrack3 -d libltdl7 \
+        -d libcap2 \
+        -d libgssapi-krb5-2 \
+        -d libkrb5-3 \
+        -d libltdl7 \
+        -d libnetfilter-conntrack3 \
+        -d libnettle8\
         -C /tmp/squid-pkg . ; \
     rename 's/.*/squid.deb/' *.deb
 
