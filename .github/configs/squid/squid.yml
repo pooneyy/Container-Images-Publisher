@@ -8,7 +8,7 @@ ref: main
 
 image_name: squid
 
-image_tag: 7.7.0,7.7,7,latest
+image_tag: 7.6.0,7.6,7,latest
 
 build_context: .github/configs/squid
 
@@ -19,6 +19,6 @@ architectures: linux/amd64, linux/arm64, linux/arm/v7, linux/ppc64le, linux/risc
 build_args: |-
   BUILDKIT_UBUNTU_VERSION=resolute-20260811.1
   BUILDKIT_IMAGE=ghcr.io/pooneyy/squid-buildkit:2026.08.30
-  SQUID_VERSION=7.7
+  SQUID_VERSION=7.6
 
 build_target: 
