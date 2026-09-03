@@ -1,0 +1,113 @@
+name: Delete Package Versions
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-name:
+        description: 要清理的镜像包名（例如 my-image）
+        required: true
+        type: string
+      owner:
+        description: 包的所有者（留空则使用当前仓库的所有者）
+        required: false
+        type: string
+        default: ''
+      package-version-ids:
+        description: 要删除的版本 ID（多个用英文逗号分隔，留空表示按下方策略删除）
+        required: false
+        type: string
+        default: ''
+      num-old-versions-to-delete:
+        description: 从最旧版本开始删除的旧版本数量（与 min-versions-to-keep 互斥）
+        required: false
+        type: string
+        default: ''
+      min-versions-to-keep:
+        description: 要保留的最新版本数量（设为 0 表示删除全部可删除的版本）
+        required: false
+        type: string
+        default: ''
+      ignore-versions:
+        description: 从删除中排除的包版本（支持正则表达式，按 tag 名称匹配）
+        required: false
+        type: string
+        default: ''
+      delete-only-pre-release-versions:
+        description: 是否仅删除预发布版本
+        required: false
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+      delete-only-untagged-versions:
+        description: 是否仅删除未打标签的版本（仅对 container 类型生效）
+        required: false
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  delete-package-versions:
+    name: 删除 GitHub Container Registry 中的包版本
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: 校验输入参数
+        env:
+          NUM_OLD: ${{ inputs.num-old-versions-to-delete }}
+          MIN_KEEP: ${{ inputs.min-versions-to-keep }}
+          PRE_RELEASE: ${{ inputs.delete-only-pre-release-versions }}
+          UNTAGGED: ${{ inputs.delete-only-untagged-versions }}
+          IGNORE_VERSIONS: ${{ inputs.ignore-versions }}
+        run: |
+          set -e
+          if [[ -n "$NUM_OLD" && -n "$MIN_KEEP" ]]; then
+            echo "::error::num-old-versions-to-delete 与 min-versions-to-keep 互斥，请只填写其中一项。"
+            exit 1
+          fi
+          if [[ "$PRE_RELEASE" == "true" ]]; then
+            if [[ -n "$NUM_OLD" ]]; then
+              echo "::error::delete-only-pre-release-versions 不能与 num-old-versions-to-delete 同时使用。"
+              exit 1
+            fi
+            if [[ -n "$IGNORE_VERSIONS" ]]; then
+              echo "::error::delete-only-pre-release-versions 不能与 ignore-versions 同时使用。"
+              exit 1
+            fi
+          fi
+          if [[ "$UNTAGGED" == "true" && -n "$NUM_OLD" ]]; then
+            echo "::error::delete-only-untagged-versions 不能与 num-old-versions-to-delete 同时使用。"
+            exit 1
+          fi
+
+      - name: 打印执行参数
+        run: |
+          echo "镜像包名: ${{ inputs.package-name }}"
+          echo "包所有者: ${{ inputs.owner }}"
+          echo "要删除的版本 ID: ${{ inputs.package-version-ids }}"
+          echo "从最旧版本开始删除的旧版本数量: ${{ inputs.num-old-versions-to-delete }}"
+          echo "要保留的最新版本数量: ${{ inputs.min-versions-to-keep }}"
+          echo "从删除中排除的包版本: ${{ inputs.ignore-versions }}"
+          echo "仅删除预发布版本: ${{ inputs.delete-only-pre-release-versions }}"
+          echo "仅删除未打标签的版本: ${{ inputs.delete-only-untagged-versions }}"
+
+      - name: 删除包版本
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ inputs.package-name }}
+          owner: ${{ inputs.owner }}
+          package-type: 'container'
+          package-version-ids: ${{ inputs.package-version-ids }}
+          num-old-versions-to-delete: ${{ inputs.num-old-versions-to-delete }}
+          min-versions-to-keep: ${{ inputs.min-versions-to-keep }}
+          ignore-versions: ${{ inputs.ignore-versions }}
+          delete-only-pre-release-versions: ${{ inputs.delete-only-pre-release-versions }}
+          delete-only-untagged-versions: ${{ inputs.delete-only-untagged-versions }}
+          token: ${{ github.token }}
