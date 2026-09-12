@@ -1,5 +1,5 @@
 ARG BUILDKIT_IMAGE=stage-buildkit
-ARG BUILDKIT_UBUNTU_VERSION=resolute-20260811.1
+ARG BUILDKIT_UBUNTU_VERSION=resolute-20260901
 FROM ubuntu:${BUILDKIT_UBUNTU_VERSION} AS stage-buildkit
 
 RUN sed -i 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources
