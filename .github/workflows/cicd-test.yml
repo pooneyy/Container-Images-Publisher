@@ -148,7 +148,7 @@ jobs:
       - name: 安装 Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.6'
+          ruby-version: '4.0.7'
       - name: 获取许可证信息
         run: |
           gem install licensee
