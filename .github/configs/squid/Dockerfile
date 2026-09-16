@@ -51,7 +51,7 @@ RUN ./bootstrap.sh ; \
         --enable-auth-digest="file,LDAP" \
         --enable-auth-negotiate="kerberos,wrapper" \
         --enable-auth-ntlm="fake" \
-        --enable-external-acl-helpers="file_userip,kerberos_ldap_group,LDAP_group,session,SQL_session,time_quota,unix_group,wbinfo_group" \
+        --enable-external-acl-helpers="delayer,file_userip,kerberos_ldap_group,LDAP_group,session,SQL_session,time_quota,unix_group,wbinfo_group" \
         --enable-security-cert-validators="fake" \
         --enable-storeid-rewrite-helpers="file" \
         --enable-url-rewrite-helpers="fake" \
