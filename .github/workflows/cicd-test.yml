@@ -26,17 +26,17 @@ jobs:
     if: github.actor == 'renovate[bot]' || github.actor == github.repository_owner
     runs-on: ubuntu-latest
     outputs:
-      runs_on: ${{ steps.read-config-file.outputs.runs_on }}
-      build_parallelism: ${{ steps.read-config-file.outputs.build_parallelism }}
+      runs-on: ${{ steps.read-config-file.outputs.runs-on }}
+      build-parallelism: ${{ steps.read-config-file.outputs.build-parallelism }}
       repo: ${{ steps.read-config-file.outputs.repo }}
       ref: ${{ steps.read-config-file.outputs.ref }}
-      image_name: ${{ steps.read-config-file.outputs.image_name }}
-      image_tag: ${{ steps.read-config-file.outputs.image_tag }}
-      build_context: ${{ steps.read-config-file.outputs.build_context }}
+      image-name: ${{ steps.read-config-file.outputs.image-name }}
+      image-tag: ${{ steps.read-config-file.outputs.image-tag }}
+      build-context: ${{ steps.read-config-file.outputs.build-context }}
       dockerfile: ${{ steps.read-config-file.outputs.dockerfile }}
       architectures: ${{ steps.read-config-file.outputs.architectures }}
-      build_args: ${{ steps.read-config-file.outputs.build_args }}
-      build_target: ${{ steps.read-config-file.outputs.build_target }}
+      build-args: ${{ steps.read-config-file.outputs.build-args }}
+      build-target: ${{ steps.read-config-file.outputs.build-target }}
     steps:
       - name: 检出分支
         uses: actions/checkout@v7
@@ -63,30 +63,30 @@ jobs:
         id: read-config-file
         run: |
           file=${{ steps.updated-files.outputs.file }}
-          echo "runs_on=$(yq e '.runs_on // "ubuntu-latest"' $file)" >> $GITHUB_OUTPUT
-          echo "build_parallelism=$(yq e '.build_parallelism // ""' $file)" >> $GITHUB_OUTPUT
+          echo "runs-on=$(yq e '.runs_on // "ubuntu-latest"' $file)" >> $GITHUB_OUTPUT
+          echo "build-parallelism=$(yq e '.build_parallelism // ""' $file)" >> $GITHUB_OUTPUT
           echo "repo=$(yq e '.repo' $file)" >> $GITHUB_OUTPUT
           echo "ref=$(yq e '.ref' $file)" >> $GITHUB_OUTPUT
-          echo "image_name=$(yq e '.image_name' $file)" >> $GITHUB_OUTPUT
+          echo "image-name=$(yq e '.image_name' $file)" >> $GITHUB_OUTPUT
 
           image_tag_prefix=$(yq e '.image_tag_prefix // ""' $file)
           image_tag=$(yq e '.image_tag' $file)
           full_image_tag="${image_tag_prefix}${image_tag}"
 
-          echo "image_tag=$full_image_tag" >> $GITHUB_OUTPUT
-          echo "build_context=$(yq e '.build_context' $file)" >> $GITHUB_OUTPUT
+          echo "image-tag=$full_image_tag" >> $GITHUB_OUTPUT
+          echo "build-context=$(yq e '.build_context' $file)" >> $GITHUB_OUTPUT
           echo "dockerfile=$(yq e '.dockerfile' $file)" >> $GITHUB_OUTPUT
           echo "architectures=$(yq e '.architectures' $file)" >> $GITHUB_OUTPUT
           {
-            echo "build_args<<EOF"
+            echo "build-args<<EOF"
             yq e '.build_args // ""' $file
             echo "EOF"
           } >> $GITHUB_OUTPUT
-          echo "build_target=$(yq e '.build_target' $file)" >> $GITHUB_OUTPUT
+          echo "build-target=$(yq e '.build_target' $file)" >> $GITHUB_OUTPUT
 
   publish-docker:
     name: 构建并发布 Docker 镜像
-    runs-on: ${{ needs.get-build-parameters.outputs.runs_on }}
+    runs-on: ${{ needs.get-build-parameters.outputs.runs-on }}
     timeout-minutes: 7200
     needs: get-build-parameters
     steps:
@@ -94,13 +94,13 @@ jobs:
         env:
           REPO_URL: ${{ needs.get-build-parameters.outputs.repo }}
           TARGET_REF: ${{ needs.get-build-parameters.outputs.ref }}
-          IMAGE_NAME: ${{ needs.get-build-parameters.outputs.image_name }}
-          IMAGE_TAG: ${{ needs.get-build-parameters.outputs.image_tag }}
-          BUILD_CONTEXT: ${{ needs.get-build-parameters.outputs.build_context }}
+          IMAGE_NAME: ${{ needs.get-build-parameters.outputs.image-name }}
+          IMAGE_TAG: ${{ needs.get-build-parameters.outputs.image-tag }}
+          BUILD_CONTEXT: ${{ needs.get-build-parameters.outputs.build-context }}
           DOCKERFILE: ${{ needs.get-build-parameters.outputs.dockerfile }}
           ARCHITECTURES: ${{ needs.get-build-parameters.outputs.architectures }}
-          BUILD_ARGS: ${{ needs.get-build-parameters.outputs.build_args }}
-          BUILD_TARGET: ${{ needs.get-build-parameters.outputs.build_target }}
+          BUILD_ARGS: ${{ needs.get-build-parameters.outputs.build-args }}
+          BUILD_TARGET: ${{ needs.get-build-parameters.outputs.build-target }}
         run: |
           echo "REPO_URL=$REPO_URL"
           echo "TARGET_REF=$TARGET_REF"
@@ -114,8 +114,8 @@ jobs:
 
       - name: 设置环境变量
         env:
-          IMAGE_NAME: ${{ needs.get-build-parameters.outputs.image_name }}
-          IMAGE_TAG: ${{ needs.get-build-parameters.outputs.image_tag }}
+          IMAGE_NAME: ${{ needs.get-build-parameters.outputs.image-name }}
+          IMAGE_TAG: ${{ needs.get-build-parameters.outputs.image-tag }}
         run: |
           owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
           echo "OWNER=$owner" >> "$GITHUB_ENV"
@@ -203,7 +203,7 @@ jobs:
       - name: 准备 Buildx 配置
         id: prepare-buildx
         run: |
-          parallelism="${{ needs.get-build-parameters.outputs.build_parallelism }}"
+          parallelism="${{ needs.get-build-parameters.outputs.build-parallelism }}"
           if [ -n "$parallelism" ]; then
             cat > ${{ github.workspace }}/buildkitd.toml <<EOF
           [worker.oci]
@@ -222,9 +222,9 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           build-args: |
-            ${{ needs.get-build-parameters.outputs.build_args }}
-          context: ${{ needs.get-build-parameters.outputs.build_context }}
-          target: ${{ needs.get-build-parameters.outputs.build_target }}
+            ${{ needs.get-build-parameters.outputs.build-args }}
+          context: ${{ needs.get-build-parameters.outputs.build-context }}
+          target: ${{ needs.get-build-parameters.outputs.build-target }}
           push: true
           file: ${{ needs.get-build-parameters.outputs.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
