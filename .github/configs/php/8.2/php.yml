@@ -5,7 +5,7 @@ ref: renovate/php-8.2
 image_name: php
 
 # renovate: datasource=docker depName=php
-image_tag_prefix: 8.2.33-fpm-bookworm
+image_tag_prefix: 8.2.34-fpm-bookworm
 
 image_tag: -php-unofficial,8.2-fpm-bookworm-php-unofficial
 
