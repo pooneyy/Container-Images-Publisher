@@ -7,7 +7,7 @@ Stremio是一个现代化的媒体中心，为您的视频娱乐提供一站式�
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/stremio-web:5.0.0-beta.27
+docker pull ghcr.io/pooneyy/stremio-web:5.0.0-beta.40
 ```
 ```shell
 docker pull ghcr.io/pooneyy/stremio-web:latest
