@@ -14,7 +14,7 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["Stremio/stremio-web"],
+      "matchPackageNames": ["**/stremio-web"],
       "ignoreUnstable": false,
       "versioning": "semver"
     },
