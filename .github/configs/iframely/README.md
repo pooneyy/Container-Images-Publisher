@@ -7,7 +7,7 @@ Iframely 能够解析 URL 并返回富媒体嵌入代码与预览信息
 获取当前最新版本
 
 ```shell
-docker pull ghcr.io/pooneyy/iframely:2.5.0
+docker pull ghcr.io/pooneyy/iframely:2.6.0
 ```
 ```shell
 docker pull ghcr.io/pooneyy/iframely:latest
