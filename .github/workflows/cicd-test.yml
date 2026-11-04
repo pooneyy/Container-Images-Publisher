@@ -209,14 +209,14 @@ jobs:
           [worker.oci]
             max-parallelism = ${parallelism}
           EOF
-            echo "config_path=${{ github.workspace }}/buildkitd.toml" >> $GITHUB_OUTPUT
+            echo "config-path=${{ github.workspace }}/buildkitd.toml" >> $GITHUB_OUTPUT
           else
-            echo "config_path=" >> $GITHUB_OUTPUT
+            echo "config-path=" >> $GITHUB_OUTPUT
           fi
       - name: 安装 Buildx Kit
         uses: docker/setup-buildx-action@v4
         with:
-          buildkitd-config: ${{ steps.prepare-buildx.outputs.config_path }}
+          buildkitd-config: ${{ steps.prepare-buildx.outputs.config-path }}
       - name: 构建并推送 Docker 镜像
         id: push
         uses: docker/build-push-action@v7
