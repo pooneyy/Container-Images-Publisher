@@ -1,6 +1,6 @@
 runs_on: self-hosted
 
-build_parallelism: 2
+build_parallelism: 0
 
 repo: https://github.com/pooneyy/Container-Images-Publisher
 
